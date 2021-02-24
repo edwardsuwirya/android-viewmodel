@@ -57,13 +57,7 @@ class RegistrationFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun subscribe() {
         viewModel.districtList.observe(this, {
-            val adapter =
-                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
-            adapter.also { adapter ->
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                binding.ditrictSpinner.adapter = adapter
-            }
-
+            binding.ditrictSpinner.adapter = DistrictAdapter(it)
         })
         viewModel.isNameValid.observe(this, {
             when (it.status) {
