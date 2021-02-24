@@ -14,8 +14,8 @@ class RegistrationFragmentViewModel : ViewModel() {
             return _isNameValid
         }
 
-    private var _districtList = MutableLiveData<List<String>>()
-    val districtList: LiveData<List<String>>
+    private var _districtList = MutableLiveData<ResourceState>()
+    val districtList: LiveData<ResourceState>
         get() {
             return _districtList
         }
@@ -40,11 +40,28 @@ class RegistrationFragmentViewModel : ViewModel() {
 
     fun onAddressGetDistrict(address: String) {
         GlobalScope.launch {
-            delay(2000)
-            if (address == "11") {
-                _districtList.postValue(listOf("123", "234", "456"))
+            _districtList.postValue(ResourceState.loading())
+            delay(1000)
+            if (address == "Jakarta Selatan") {
+                _districtList.postValue(
+                    ResourceState.success(
+                        arrayListOf(
+                            "Ragunan",
+                            "Pasar Minggu",
+                            "Pancoran"
+                        )
+                    )
+                )
             } else {
-                _districtList.postValue(listOf("XYZ", "ABC", "WHC"))
+                _districtList.postValue(
+                    ResourceState.success(
+                        arrayListOf(
+                            "Duren Sawit",
+                            "Manggarai",
+                            "Pasar Rebo"
+                        )
+                    )
+                )
             }
         }
     }

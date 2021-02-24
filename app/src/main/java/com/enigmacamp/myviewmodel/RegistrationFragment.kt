@@ -1,6 +1,7 @@
 package com.enigmacamp.myviewmodel
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +45,7 @@ class RegistrationFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 val ktp = ktpEditText.text
                 viewModel.inputNameValidation(ktp.toString())
             }
+            ditrictSpinner.adapter = DistrictAdapter(null)
             ditrictSpinner.onItemSelectedListener = this@RegistrationFragment
         }
         return binding.root
