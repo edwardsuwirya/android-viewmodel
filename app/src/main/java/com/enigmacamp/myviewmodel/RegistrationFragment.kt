@@ -1,9 +1,12 @@
 package com.enigmacamp.myviewmodel
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -11,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.enigmacamp.myviewmodel.databinding.FragmentRegistrationBinding
 
-class RegistrationFragment : Fragment() {
+class RegistrationFragment : Fragment(), AdapterView.OnItemSelectedListener {
     lateinit var sharedViewModel: MainActivityViewModel
     lateinit var viewModel: RegistrationFragmentViewModel
     lateinit var binding: FragmentRegistrationBinding
@@ -30,10 +33,18 @@ class RegistrationFragment : Fragment() {
         loadingDialog = LoadingDialog.build(requireContext())
         binding = FragmentRegistrationBinding.inflate(layoutInflater)
         binding.apply {
-            registrationButton.setOnClickListener {
-                val personName = nameEditText.text
-                viewModel.inputNameValidation(personName.toString())
+            addressEditText.setOnKeyListener { view, keyCode, keyEvent ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                    viewModel.onAddressGetDistrict(addressEditText.text.toString())
+                    return@setOnKeyListener true
+                }
+                false
             }
+            registrationButton.setOnClickListener {
+                val ktp = ktpEditText.text
+                viewModel.inputNameValidation(ktp.toString())
+            }
+            ditrictSpinner.onItemSelectedListener = this@RegistrationFragment
         }
         return binding.root
     }
@@ -45,6 +56,15 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun subscribe() {
+        viewModel.districtList.observe(this, {
+            val adapter =
+                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
+            adapter.also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                binding.ditrictSpinner.adapter = adapter
+            }
+
+        })
         viewModel.isNameValid.observe(this, {
             when (it.status) {
                 ResourceStatus.LOADING -> loadingDialog.show()
@@ -68,5 +88,13 @@ class RegistrationFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() = RegistrationFragment()
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        // parent.getItemAtPosition(pos)
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        TODO("Not yet implemented")
     }
 }

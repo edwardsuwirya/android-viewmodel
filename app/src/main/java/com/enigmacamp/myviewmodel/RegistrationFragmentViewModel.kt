@@ -14,6 +14,12 @@ class RegistrationFragmentViewModel : ViewModel() {
             return _isNameValid
         }
 
+    private var _districtList = MutableLiveData<List<String>>()
+    val districtList: LiveData<List<String>>
+        get() {
+            return _districtList
+        }
+
     fun inputNameValidation(name: String) {
         //Simulasi delay dari backend API
         GlobalScope.launch {
@@ -30,6 +36,16 @@ class RegistrationFragmentViewModel : ViewModel() {
 //        } else {
 //            _isNameValid.value = ResourceState.fail("Name can not empty")
 //        }
+    }
 
+    fun onAddressGetDistrict(address: String) {
+        GlobalScope.launch {
+            delay(2000)
+            if (address == "11") {
+                _districtList.postValue(listOf("123", "234", "456"))
+            } else {
+                _districtList.postValue(listOf("XYZ", "ABC", "WHC"))
+            }
+        }
     }
 }
